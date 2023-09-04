@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+
 import { getAllContacts } from "../services/getAllContacts";
 
 const AppContext = createContext();
@@ -8,6 +9,7 @@ export const AppContextProvider = ({ children }) => {
   useEffect(() => {
     getAllContacts().then((res) => setContacts[res]);
   }, []);
+  const store = {contacts}
   return <AppContext.Provider value={contacts}>{children}</AppContext.Provider>;
 };
 

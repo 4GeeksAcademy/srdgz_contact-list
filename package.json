@@ -5,7 +5,7 @@
   },
   "version": "1.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "Main.jsx",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js --host 0.0.0.0 --port 3000",
     "build": "webpack --config webpack.prod.js",
