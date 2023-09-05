@@ -1,13 +1,16 @@
-export const getAllContacts = () => {
-  return fetch(
-    "https://playground.4geeks.com/apis/fake/contact/agenda/personal"
-  )
-    .then((res) => {
-      if (!res.ok) {
-        throw Error("Algo ha fallado");
-      }
-      return res.json();
-    })
-    .then((res) => res)
-    .catch((err) => console.log(err));
+const url = "https://playground.4geeks.com/apis/fake/contact/agenda/personal";
+
+export const getAllContacts = async () => {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener los contactos: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(`Error al obtener los contactos: ${error.message}`);
+  }
 };

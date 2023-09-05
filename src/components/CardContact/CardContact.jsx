@@ -1,61 +1,65 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import useAppContext from "../../context/AppContext.jsx";
+import Modal from "../Modal/Modal.jsx";
 
 const CardContact = (props) => {
-  const ctx = useAppContext();
-  function handleClickEdit(props) {
-    getContact(
-      props.id,
-      props.full_name,
-      props.email,
-      props.address,
-      props.phone
-    );
-    props.onEdit();
-  }
+  const Context = useAppContext();
+  const [showModal, setShowModal] = useState(false);
+
+  const handleEditContact = () => {
+    props.onEdit({
+      id: props.id,
+      full_name: props.full_name,
+      email: props.email,
+      address: props.address,
+      phone: props.phone,
+    });
+  };
+
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <>
-      <li className="list-group-item">
-        <div className="row w-100">
-          <div className="col-12 col-sm-6 col-md-3 px-0">
+      <li className="list-group-item w-70">
+        <div className="row w-70">
+          <div className="col-12 col-sm-6 col-md-2 px-1 me-5">
             <img
               src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
-              className="rounded-circle shadow-4-strong m-3"
+              className="rounded-circle shadow-4-strong m-3 img-fluid"
               alt="avatar"
             />
           </div>
-          <div className="col-12 col-sm-6 col-md-9 text-center text-sm-left">
-            <div className=" float-right">
-              <button className="btn" onClick={() => handleClickEdit(props)}>
-                <i className="fas fa-pencil-alt mr-3" />
+          <div className="col-12 col-sm-6 col-md-9 text-left text-sm-left">
+            <div className="float-right d-flex">
+              <Link
+                to="/EditContact/:id"
+                className="btn ms-auto"
+                onClick={handleEditContact}
+              >
+                <i className="fa-solid fa-pencil" />
+              </Link>
+              <button className="btn" onClick={() => handleOpenModal()}>
+                <i className="fa-solid fa-trash-can"></i>
               </button>
-              <button className="btn">
-                <i className="fas fa-trash-alt" />
-              </button>
+              {showModal && <Modal />}
             </div>
-            <label className="name">{props.full_name}</label>
+            <h4 className="name m-0">{props.full_name}</h4>
             <br />
-            <i className="fas fa-map-marker-alt text-muted mr-3" />
+            <i className="fa-solid fa-location-dot text-muted me-3" />
             <span className="text-muted">{props.address}</span>
             <br />
-            <span
-              className="fa fa-phone fa-fw text-muted mr-3"
-              data-toggle="tooltip"
-              title=""
-              data-original-title="(870) 288-4149"
-            />
-            <span className="text-muted small">{props.phone}</span>
+            <i className="fa-solid fa-phone text-muted me-3" />
+            <span className="text-muted">{props.phone}</span>
             <br />
-            <span
-              className="fa fa-envelope fa-fw text-muted mr-3"
-              data-toggle="tooltip"
-              data-original-title=""
-              title=""
-            />
-            <span className="text-muted small text-truncate">
-              {props.email}
-            </span>
+            <i className="fa-solid fa-envelope text-muted me-3" />
+            <span className="text-muted">{props.email}</span>
           </div>
         </div>
       </li>

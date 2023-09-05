@@ -1,7 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { getAllContacts } from "../services/getAllContacts";
 
 const FormPage = () => {
+  const [newContact, setNewContact] = useState({
+    full_name: "",
+    email: "",
+    phone: "",
+    address: "",
+    agenda_slug: "personal",
+  });
+
+  const handleNewContact = async () => {
+    try {
+      const addedContact = await createNewContact(newContact);
+      const updatedContacts = await getAllContacts();
+      setContacts(updatedContacts);
+      setNewContact({
+        full_name: "",
+        email: "",
+        phone: "",
+        address: "",
+        agenda_slug: "personal",
+      });
+      getAllContacts();
+    } catch (err) {
+      console.err("Error al agregar el nuevo contacto:", err);
+    }
+  };
   return (
     <form className="container needs-validation" noValidate>
       <h1 className="text-center my-5">Add new contact</h1>
@@ -16,6 +42,10 @@ const FormPage = () => {
           aria-describedby="formHelp"
           placeholder="Full Name"
           required
+          value={newContact.full_name}
+          onChange={(e) =>
+            setNewContact({ ...newContact, full_name: e.target.value })
+          }
         />
       </div>
       <div className="mb-3">
@@ -28,6 +58,10 @@ const FormPage = () => {
           id="email"
           placeholder="Enter email"
           required
+          value={newContact.email}
+          onChange={(e) =>
+            setNewContact({ ...newContact, email: e.target.value })
+          }
         />
       </div>
       <div className="mb-3">
@@ -40,6 +74,10 @@ const FormPage = () => {
           id="phone"
           placeholder="Enter phone"
           required
+          value={newContact.phone}
+          onChange={(e) =>
+            setNewContact({ ...newContact, phone: e.target.value })
+          }
         />
       </div>
       <div className="mb-3">
@@ -52,10 +90,18 @@ const FormPage = () => {
           id="address"
           placeholder="Enter address"
           required
+          value={newContact.address}
+          onChange={(e) =>
+            setNewContact({ ...newContact, address: e.target.value })
+          }
         />
       </div>
       <div className="d-grid gap-2">
-        <button type="submit" className="btn btn-primary">
+        <button
+          type="submit"
+          className="btn btn-primary"
+          onClick={handleNewContact}
+        >
           Save
         </button>
       </div>
