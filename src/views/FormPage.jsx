@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { getAllContacts } from "../services/getAllContacts";
+
+import useAppContext from "../context/AppContext.jsx";
 
 const FormPage = () => {
+  const { store, actions } = useAppContext();
   const [newContact, setNewContact] = useState({
     full_name: "",
     email: "",
@@ -10,27 +12,37 @@ const FormPage = () => {
     address: "",
     agenda_slug: "personal",
   });
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const handleNewContact = async () => {
-    try {
-      const addedContact = await createNewContact(newContact);
-      const updatedContacts = await getAllContacts();
-      setContacts(updatedContacts);
-      setNewContact({
-        full_name: "",
-        email: "",
-        phone: "",
-        address: "",
-        agenda_slug: "personal",
-      });
-      getAllContacts();
-    } catch (err) {
-      console.err("Error al agregar el nuevo contacto:", err);
-    }
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setNewContact({
+      ...newContact,
+      [id]: value,
+    });
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    actions.createNewContact(newContact);
+    setFormSubmitted(true);
+    setNewContact({
+      full_name: "",
+      email: "",
+      phone: "",
+      address: "",
+      agenda_slug: "personal",
+    });
+  };
+
   return (
     <form className="container needs-validation" noValidate>
       <h1 className="text-center my-5">Add new contact</h1>
+      {formSubmitted && (
+        <div className="alert alert-success" role="alert">
+          Contact save successfully
+        </div>
+      )}
       <div className="mb-3">
         <label htmlFor="full_name" className="form-label">
           Full Name
@@ -42,10 +54,8 @@ const FormPage = () => {
           aria-describedby="formHelp"
           placeholder="Full Name"
           required
-          value={newContact.full_name}
-          onChange={(e) =>
-            setNewContact({ ...newContact, full_name: e.target.value })
-          }
+          value={newContact["full_name"]}
+          onChange={handleInputChange}
         />
       </div>
       <div className="mb-3">
@@ -58,10 +68,8 @@ const FormPage = () => {
           id="email"
           placeholder="Enter email"
           required
-          value={newContact.email}
-          onChange={(e) =>
-            setNewContact({ ...newContact, email: e.target.value })
-          }
+          value={newContact["email"]}
+          onChange={handleInputChange}
         />
       </div>
       <div className="mb-3">
@@ -69,15 +77,13 @@ const FormPage = () => {
           Phone
         </label>
         <input
-          type="phone"
+          type="tel"
           className="form-control"
           id="phone"
           placeholder="Enter phone"
           required
-          value={newContact.phone}
-          onChange={(e) =>
-            setNewContact({ ...newContact, phone: e.target.value })
-          }
+          value={newContact["phone"]}
+          onChange={handleInputChange}
         />
       </div>
       <div className="mb-3">
@@ -85,22 +91,20 @@ const FormPage = () => {
           Address
         </label>
         <input
-          type="address"
+          type="text"
           className="form-control"
           id="address"
           placeholder="Enter address"
           required
-          value={newContact.address}
-          onChange={(e) =>
-            setNewContact({ ...newContact, address: e.target.value })
-          }
+          value={newContact["address"]}
+          onChange={handleInputChange}
         />
       </div>
       <div className="d-grid gap-2">
         <button
-          type="submit"
+          type="button"
           className="btn btn-primary"
-          onClick={handleNewContact}
+          onClick={handleSubmit}
         >
           Save
         </button>

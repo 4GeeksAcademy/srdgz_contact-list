@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import useAppContext from "../../context/AppContext.jsx";
 import Modal from "../Modal/Modal.jsx";
 
 const CardContact = (props) => {
-  const Context = useAppContext();
+  const { store, actions } = useAppContext();
   const [showModal, setShowModal] = useState(false);
 
   const handleEditContact = () => {
@@ -18,7 +18,7 @@ const CardContact = (props) => {
     });
   };
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (e) => {
     setShowModal(true);
   };
   const handleCloseModal = () => {
@@ -45,7 +45,7 @@ const CardContact = (props) => {
               >
                 <i className="fa-solid fa-pencil" />
               </Link>
-              <button className="btn" onClick={() => handleOpenModal()}>
+              <button className="btn" onClick={(e) => handleOpenModal()}>
                 <i className="fa-solid fa-trash-can"></i>
               </button>
               {showModal && <Modal />}

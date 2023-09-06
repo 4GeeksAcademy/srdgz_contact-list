@@ -1,24 +1,17 @@
 import React, { useState } from "react";
 import useAppContext from "../../context/AppContext.jsx";
+import { deleteContact } from "../../services/deleteContact";
 
 const Modal = (props) => {
-  const Context = useAppContext();
+  const { store, actions } = useAppContext();
+  const [showModal, setShowModal] = useState(false);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const handleConfirmDelete = () => {
-    const contactUrl = `https://playground.4geeks.com/apis/fake/contact/${props.id}`;
-    fetch(contactUrl, {
-      method: "DELETE",
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Error al eliminar el contacto: ${res.statusText}`);
-        }
-        Context.getAllContacts();
-        setShowModal(false);
-      })
-      .catch((err) => {
-        console.error("Error al eliminar el contacto:", err);
-      });
+    deleteContact(props.id);
   };
 
   return (
@@ -29,10 +22,7 @@ const Modal = (props) => {
         <button className="btn btn-danger" onClick={handleConfirmDelete}>
           Confirm
         </button>
-        <button
-          className="btn btn-secondary"
-          onClick={() => setShowModal(false)}
-        >
+        <button className="btn btn-secondary" onClick={handleCloseModal}>
           Cancel
         </button>
       </div>
