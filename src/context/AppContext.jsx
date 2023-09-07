@@ -12,7 +12,7 @@ export const AppContextProvider = ({ children }) => {
 
   const editContact = async (full_name, email, address, phone, id) => {
     try {
-      await updatedContact({full_name, email, address, phone, id});
+      await updatedContact({ full_name, email, address, phone, id });
       const response = await getAllContacts();
       setContacts(response);
     } catch (error) {
@@ -31,7 +31,7 @@ export const AppContextProvider = ({ children }) => {
 
   const removeContact = async (id) => {
     try {
-      await deleteContact(id);
+      await deleteContact({ id });
       await updateContactList();
     } catch (error) {
       console.error("Error deleting contact:", error);

@@ -1,17 +1,18 @@
-export const deleteContact = ({ id }) => {
-  return fetch(`https://playground.4geeks.com/apis/fake/contact/${id}`, {
-    method: "DELETE",
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw Error("Request Error: " + response.statusText);
+export const deleteContact = async ({ id }) => {
+  try {
+    const response = await fetch(
+      `https://playground.4geeks.com/apis/fake/contact/${id}`,
+      {
+        method: "DELETE",
       }
-      return response.json();
-    })
-    .then((response) => {
-      console.log(response);
+    );
 
-      return response;
-    })
-    .catch((error) => console.log(error));
+    if (!response.ok) {
+      throw new Error(`Error al eliminar el contacto: ${response.statusText}`);
+    }
+    return true;
+  } catch (error) {
+    console.error("Error al eliminar el contacto:", error);
+    throw error;
+  }
 };

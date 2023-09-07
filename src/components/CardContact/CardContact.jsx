@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import useAppContext from "../../context/AppContext.jsx";
-import Modal from "../Modal/Modal.jsx";
 
 const CardContact = (props) => {
   const { store, actions } = useAppContext();
   const [showModal, setShowModal] = useState(false);
-  const [contactToDelete, setContactToDelete] = useState(null);
 
   const handleEditContact = () => {
     props.onEdit({
@@ -19,17 +17,21 @@ const CardContact = (props) => {
     });
   };
 
-  const handleOpenModal = (contact) => {
-    setContactToDelete(contact);
+  const handleDeleteContact = () => {
     setShowModal(true);
   };
 
-  const handleCloseModal = (action) => {
-    setShowModal(false);
-    if (action === "delete" && contactToDelete) {
-      actions.removeContact(contactToDelete.id);
+  const handleConfirmDelete = async () => {
+    try {
+      await actions.removeContact(props.id);
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error deleting contact:", error);
     }
-    setContactToDelete(null);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -52,15 +54,45 @@ const CardContact = (props) => {
               >
                 <i className="fa-solid fa-pencil" />
               </Link>
-              <button className="btn" type="button" onClick={handleOpenModal}>
+              <button
+                className="btn"
+                type="button"
+                onClick={handleDeleteContact}
+              >
                 <i className="fa-solid fa-trash-can"></i>
               </button>
               {showModal && (
-                <Modal
-                  contact={contactToDelete}
-                  onClose={(action) => handleCloseModal(action)}
-                  showModal={showModal}
-                />
+                <div className="modal" style={{ display: "block" }}>
+                  <div className="modal-dialog">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h5 className="modal-title">Are you sure?</h5>
+                      </div>
+                      <div className="modal-body">
+                        <p>
+                          If you delete this item you will not be able to
+                          recover it.
+                        </p>
+                      </div>
+                      <div className="modal-footer">
+                        <button
+                          type="button"
+                          className="btn btn-danger"
+                          onClick={handleConfirmDelete}
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={handleCloseModal}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
             <h4 className="name m-0">{props.full_name}</h4>
