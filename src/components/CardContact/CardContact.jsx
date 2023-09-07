@@ -7,6 +7,7 @@ import Modal from "../Modal/Modal.jsx";
 const CardContact = (props) => {
   const { store, actions } = useAppContext();
   const [showModal, setShowModal] = useState(false);
+  const [contactToDelete, setContactToDelete] = useState(null);
 
   const handleEditContact = () => {
     props.onEdit({
@@ -18,11 +19,17 @@ const CardContact = (props) => {
     });
   };
 
-  const handleOpenModal = (e) => {
+  const handleOpenModal = (contact) => {
+    setContactToDelete(contact);
     setShowModal(true);
   };
-  const handleCloseModal = () => {
+
+  const handleCloseModal = (action) => {
     setShowModal(false);
+    if (action === "delete" && contactToDelete) {
+      actions.removeContact(contactToDelete.id);
+    }
+    setContactToDelete(null);
   };
 
   return (
@@ -39,16 +46,22 @@ const CardContact = (props) => {
           <div className="col-12 col-sm-6 col-md-9 text-left text-sm-left">
             <div className="float-right d-flex">
               <Link
-                to="/EditContact/:id"
+                to={`/EditContact/${props.id}`}
                 className="btn ms-auto"
                 onClick={handleEditContact}
               >
                 <i className="fa-solid fa-pencil" />
               </Link>
-              <button className="btn" onClick={(e) => handleOpenModal()}>
+              <button className="btn" type="button" onClick={handleOpenModal}>
                 <i className="fa-solid fa-trash-can"></i>
               </button>
-              {showModal && <Modal />}
+              {showModal && (
+                <Modal
+                  contact={contactToDelete}
+                  onClose={(action) => handleCloseModal(action)}
+                  showModal={showModal}
+                />
+              )}
             </div>
             <h4 className="name m-0">{props.full_name}</h4>
             <br />

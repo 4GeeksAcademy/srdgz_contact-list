@@ -10,7 +10,7 @@ const Home = () => {
 
   useEffect(() => {
     actions.updateContactList();
-  }, []);
+  }, [actions]);
 
   return (
     <main className="container">
@@ -26,20 +26,25 @@ const Home = () => {
         aria-expanded="true"
       >
         <ul className="list-group pull-down" id="contact-list">
-          {Array.isArray(contacts)
-            ? contacts.map((item, index) => {
-                return (
-                  <CardContact
-                    id={item.id}
-                    key={index}
-                    full_name={item.full_name}
-                    email={item.email}
-                    address={item.address}
-                    phone={item.phone}
-                  />
-                );
-              })
-            : null}
+          {Array.isArray(contacts) && contacts.length === 0 ? (
+            <span
+              className="badge bg-danger text-wrap fs-5 p-3"
+              style={{ width: "35rem" }}
+            >
+              Contact list is empty. Please, add a new contact.
+            </span>
+          ) : (
+            contacts.map((item, index) => (
+              <CardContact
+                id={item.id}
+                key={index}
+                full_name={item.full_name}
+                email={item.email}
+                address={item.address}
+                phone={item.phone}
+              />
+            ))
+          )}
         </ul>
       </div>
     </main>

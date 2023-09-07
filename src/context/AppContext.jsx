@@ -10,31 +10,32 @@ const AppContext = createContext();
 export const AppContextProvider = ({ children }) => {
   const [contacts, setContacts] = useState([]);
 
-  const editContact = (full_name, email, address, phone, id) => {
-    updatedContact(full_name, email, address, phone, id);
-    getAllContacts().then((response) => {
+  const editContact = async (full_name, email, address, phone, id) => {
+    try {
+      await updatedContact({full_name, email, address, phone, id});
+      const response = await getAllContacts();
       setContacts(response);
-    });
+    } catch (error) {
+      console.error("Error editing contact:", error);
+    }
   };
 
-  const updateContactList = () => {
-    getAllContacts()
-      .then((response) => {
-        setContacts(response);
-      })
-      .catch((error) => {
-        console.error("Error fetching contacts:", error);
-      });
+  const updateContactList = async () => {
+    try {
+      const response = await getAllContacts();
+      setContacts(response);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
   };
 
-  const removeContact = (id) => {
-    deleteContact(id)
-      .then(() => {
-        updateContactList();
-      })
-      .catch((error) => {
-        console.error("Error deleting contact:", error);
-      });
+  const removeContact = async (id) => {
+    try {
+      await deleteContact(id);
+      await updateContactList();
+    } catch (error) {
+      console.error("Error deleting contact:", error);
+    }
   };
 
   useEffect(() => {

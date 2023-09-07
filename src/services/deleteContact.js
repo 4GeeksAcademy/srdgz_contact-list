@@ -4,7 +4,7 @@ export const deleteContact = ({ id }) => {
   })
     .then((response) => {
       if (!response.ok) {
-        throw Error("Request Error");
+        throw Error("Request Error: " + response.statusText);
       }
       return response.json();
     })
