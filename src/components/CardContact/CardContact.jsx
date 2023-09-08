@@ -62,9 +62,9 @@ const CardContact = (props) => {
                 <i className="fa-solid fa-trash-can"></i>
               </button>
               {showModal && (
-                <div className="modal" style={{ display: "block" }}>
+                <div className="modal mt-5" style={{ display: "block" }}>
                   <div className="modal-dialog">
-                    <div className="modal-content">
+                    <div className="modal-content bg-light border border-4 rounded">
                       <div className="modal-header">
                         <h5 className="modal-title">Are you sure?</h5>
                       </div>

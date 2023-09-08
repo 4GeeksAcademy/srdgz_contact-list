@@ -27,12 +27,14 @@ const Home = () => {
       >
         <ul className="list-group pull-down" id="contact-list">
           {Array.isArray(contacts) && contacts.length === 0 ? (
-            <span
-              className="badge bg-danger text-wrap fs-5 p-3"
-              style={{ width: "35rem" }}
-            >
-              Contact list is empty. Please, add a new contact.
-            </span>
+            <div className="container d-flex justify-content-center align-items-center">
+              <span
+                className="badge bg-primary text-wrap fs-5 p-3"
+                style={{ width: "35rem" }}
+              >
+                Contact list is empty. Please, add a new contact.
+              </span>
+            </div>
           ) : (
             contacts.map((item, index) => (
               <CardContact
