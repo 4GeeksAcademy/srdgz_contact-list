@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 
 import useAppContext from "../context/AppContext.jsx";
 
 const EditPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { store, actions } = useAppContext();
   const contacts = store.contacts;
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
 
   const indexToEdit = contacts.findIndex(
     (contact) => contact.id === Number(id)
@@ -33,16 +35,34 @@ const EditPage = () => {
 
   const handleUpdateContact = async (e) => {
     e.preventDefault();
-    if (contactToEdit) {
-      await actions.editContact(
-        contactToEdit.full_name,
-        contactToEdit.email,
-        contactToEdit.address,
-        contactToEdit.phone,
-        contactToEdit.id
-      );
-      await actions.updateContactList();
-      setFormSubmitted(true);
+    const errors = {};
+    if (!contactToEdit.full_name.trim()) {
+      errors.full_name = "Full Name is required";
+    }
+    if (!contactToEdit.email.trim()) {
+      errors.email = "Email is required";
+    }
+    if (!contactToEdit.phone.trim()) {
+      errors.phone = "Phone is required";
+    }
+    if (!contactToEdit.address.trim()) {
+      errors.address = "Address is required";
+    }
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+    } else {
+      if (contactToEdit) {
+        await actions.editContact(
+          contactToEdit.full_name,
+          contactToEdit.email,
+          contactToEdit.address,
+          contactToEdit.phone,
+          contactToEdit.id
+        );
+        await actions.updateContactList();
+        setFormSubmitted(true);
+        navigate("/");
+      }
     }
   };
 
@@ -62,15 +82,19 @@ const EditPage = () => {
             </label>
             <input
               type="text"
-              className="form-control"
+              className={`form-control ${
+                formErrors.full_name ? "is-invalid" : ""
+              }`}
               id="full_name"
               name="full_name"
               aria-describedby="formHelp"
               placeholder="Full Name"
               value={contactToEdit.full_name}
               onChange={handleEditInput}
-              required
             />
+            {formErrors.full_name && (
+              <div className="invalid-feedback">{formErrors.full_name}</div>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
@@ -78,44 +102,52 @@ const EditPage = () => {
             </label>
             <input
               type="email"
-              className="form-control"
+              className={`form-control ${formErrors.email ? "is-invalid" : ""}`}
               id="email"
               name="email"
               placeholder="Enter email"
               value={contactToEdit.email}
               onChange={handleEditInput}
-              required
             />
+            {formErrors.email && (
+              <div className="invalid-feedback">{formErrors.email}</div>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="phone" className="form-label">
               Phone
             </label>
             <input
-              type="phone"
-              className="form-control"
+              type="tel"
+              className={`form-control ${formErrors.phone ? "is-invalid" : ""}`}
               id="phone"
               name="phone"
               placeholder="Enter phone"
               value={contactToEdit.phone}
               onChange={handleEditInput}
-              required
             />
+            {formErrors.phone && (
+              <div className="invalid-feedback">{formErrors.phone}</div>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="address" className="form-label">
               Address
             </label>
             <input
-              type="address"
-              className="form-control"
+              type="text"
+              className={`form-control ${
+                formErrors.address ? "is-invalid" : ""
+              }`}
               id="address"
               name="address"
               placeholder="Enter address"
               value={contactToEdit.address}
               onChange={handleEditInput}
-              required
             />
+            {formErrors.address && (
+              <div className="invalid-feedback">{formErrors.address}</div>
+            )}
           </div>
           <div className="d-grid gap-2">
             <button
